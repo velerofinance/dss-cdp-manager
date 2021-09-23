@@ -10,10 +10,10 @@
 - `urnAllow(address usr, uint ok)`: Allow/Disallow (`ok`) `usr` to access `msg.sender` space (for sending a position in `quit`).
 - `open(bytes32 ilk, address usr)`: Opens a new CDP for `usr` to be used for an `ilk` collateral type.
 - `give(uint cdp, address dst)`: Transfers `cdp` to `dst`.
-- `frob(uint cdp, int dink, int dart)`: Increments/decrements the `dink` amount of collateral locked and increments/decrements the `dart` amount of debt in the `cdp` depositing the generated DAI or collateral freed in the `cdp` address.
+- `frob(uint cdp, int dink, int dart)`: Increments/decrements the `dink` amount of collateral locked and increments/decrements the `dart` amount of debt in the `cdp` depositing the generated USDV or collateral freed in the `cdp` address.
 - `flux(bytes32 ilk, uint cdp, address dst, uint wad)`: Moves `wad` (precision 18) amount of collateral `ilk` from `cdp` to `dst`.
 - `flux(uint cdp, address dst, uint wad)`: Moves `wad` amount of `cdp` collateral from `cdp` to `dst`.
-- `move(uint cdp, address dst, uint rad)`: Moves `rad` (precision 45) amount of DAI from `cdp` to `dst`.
+- `move(uint cdp, address dst, uint rad)`: Moves `rad` (precision 45) amount of USDV from `cdp` to `dst`.
 - `quit(uint cdp, address dst)`: Moves the collateral locked and debt generated from `cdp` to `dst`.
 - `enter(address src, uint cdp)`: Moves the collateral locked and debt generated from `src` to `cdp`.
 - `shift(uint cdpSrc, uint cdpDst)`: Moves the collateral locked and debt generated from `cdpSrc` to `cdpDst`.
@@ -51,7 +51,7 @@ The CDP manager was created as a way to enable CDPs to be treated more like asse
 
 - A User executes `open` and gets a `CDPId` in return.
 - After this, the `CDPId` gets associated with an `urn` with `manager.urns(cdpId)` and then `join`'s collateral to it.
-- After the user executes `frob`, the generated DAI will remain in the CDP's `urn`. Then the user can `move` it at a later point in time.
+- After the user executes `frob`, the generated USDV will remain in the CDP's `urn`. Then the user can `move` it at a later point in time.
     - Note that this is the same process for collateral that is freed after `frob`. The user can `flux` it to another address at a later time.
 - In the case where a user wants to abandon the `manager`, they can use `quit` as a way to migrate their position of their CDP to another `dst` address.
 
@@ -60,8 +60,8 @@ The CDP manager was created as a way to enable CDPs to be treated more like asse
 - For the developers who want to integrate with the `manager`, they will need to understand that the CDP actions are still in the `urn` environment. Regardless of this, the `manager` tries to abstract the `urn` usage by a `CDPId`. This means that developers will need to get the `urn` (`urn = manager.urns(cdpId)`) to allow the `join`ing of collateral to that CDP.
 - As the `manager` assigns a specific `ilk` per `CDPId` and doesn't allow others to use it for theirs, there is a second `flux` function which expects an `ilk` parameter. This function has the simple purpose of taking out collateral that was wrongly sent to a CDP that can't handle it/is incompatible.
 - **Frob Function:**
-    - When you `frob` in the CDP manager, you generate new DAI in the `vat` via the CDP manager which is then deposited in the `urn` that the CDP manager manages.
-    - You would need to manually use the `flux` or `move` functions to get the DAI or collateral out.
+    - When you `frob` in the CDP manager, you generate new USDV in the `vat` via the CDP manager which is then deposited in the `urn` that the CDP manager manages.
+    - You would need to manually use the `flux` or `move` functions to get the USDV or collateral out.
 
 # 5. Failure Modes (Bounds on Operating Conditions & External Risk Factors)
 

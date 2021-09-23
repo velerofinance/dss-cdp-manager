@@ -182,7 +182,7 @@ contract DssCdpManager is LibNote {
         count[dst] = add(count[dst], 1);
     }
 
-    // Frob the cdp keeping the generated DAI or collateral freed in the cdp urn address.
+    // Frob the cdp keeping the generated USDV or collateral freed in the cdp urn address.
     function frob(
         uint cdp,
         int dink,
@@ -219,7 +219,7 @@ contract DssCdpManager is LibNote {
         VatLike(vat).flux(ilk, urns[cdp], dst, wad);
     }
 
-    // Transfer wad amount of DAI from the cdp address to a dst address.
+    // Transfer wad amount of USDV from the cdp address to a dst address.
     function move(
         uint cdp,
         address dst,

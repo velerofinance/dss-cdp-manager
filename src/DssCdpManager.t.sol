@@ -73,7 +73,7 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testOpenCDP() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         assertEq(cdp, 1);
         assertEq(vat.can(address(bytes20(manager.urns(cdp))), address(manager)), 1);
         assertEq(manager.owns(cdp), address(this));
@@ -81,25 +81,25 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testOpenCDPOtherAddress() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(123));
+        uint cdp = manager.open("VLX", address(123));
         assertEq(manager.owns(cdp), address(123));
     }
 
     function testFailOpenCDPZeroAddress() public {
         setUpManager();
-        manager.open("ETH", address(0));
+        manager.open("VLX", address(0));
     }
 
     function testGiveCDP() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(123));
         assertEq(manager.owns(cdp), address(123));
     }
 
     function testAllowAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.cdpAllow(cdp, address(user), 1);
         user.doCdpAllow(manager, cdp, address(123), 1);
         assertEq(manager.cdpCan(address(this), cdp, address(123)), 1);
@@ -107,13 +107,13 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testFailAllowNotAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         user.doCdpAllow(manager, cdp, address(123), 1);
     }
 
     function testGiveAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.cdpAllow(cdp, address(user), 1);
         user.doGive(manager, cdp, address(123));
         assertEq(manager.owns(cdp), address(123));
@@ -121,13 +121,13 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testFailGiveNotAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         user.doGive(manager, cdp, address(123));
     }
 
     function testFailGiveNotAllowed2() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.cdpAllow(cdp, address(user), 1);
         manager.cdpAllow(cdp, address(user), 0);
         user.doGive(manager, cdp, address(123));
@@ -135,34 +135,34 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testFailGiveNotAllowed3() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        uint cdp2 = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
+        uint cdp2 = manager.open("VLX", address(this));
         manager.cdpAllow(cdp2, address(user), 1);
         user.doGive(manager, cdp, address(123));
     }
 
     function testFailGiveToZeroAddress() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(0));
     }
 
     function testFailGiveToSameOwner() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(this));
     }
 
     function testDoubleLinkedList() public {
         setUpManager();
-        uint cdp1 = manager.open("ETH", address(this));
-        uint cdp2 = manager.open("ETH", address(this));
-        uint cdp3 = manager.open("ETH", address(this));
+        uint cdp1 = manager.open("VLX", address(this));
+        uint cdp2 = manager.open("VLX", address(this));
+        uint cdp3 = manager.open("VLX", address(this));
 
-        uint cdp4 = manager.open("ETH", address(user));
-        uint cdp5 = manager.open("ETH", address(user));
-        uint cdp6 = manager.open("ETH", address(user));
-        uint cdp7 = manager.open("ETH", address(user));
+        uint cdp4 = manager.open("VLX", address(user));
+        uint cdp5 = manager.open("VLX", address(user));
+        uint cdp6 = manager.open("VLX", address(user));
+        uint cdp7 = manager.open("VLX", address(user));
 
         assertEq(manager.count(address(this)), 3);
         assertEq(manager.first(address(this)), cdp1);
@@ -247,14 +247,14 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testGetCdpsAsc() public {
         setUpManager();
-        uint cdp1 = manager.open("ETH", address(this));
+        uint cdp1 = manager.open("VLX", address(this));
         uint cdp2 = manager.open("REP", address(this));
         uint cdp3 = manager.open("GOLD", address(this));
 
         (uint[] memory ids,, bytes32[] memory ilks) = getCdps.getCdpsAsc(address(manager), address(this));
         assertEq(ids.length, 3);
         assertEq(ids[0], cdp1);
-        assertEq32(ilks[0], bytes32("ETH"));
+        assertEq32(ilks[0], bytes32("VLX"));
         assertEq(ids[1], cdp2);
         assertEq32(ilks[1], bytes32("REP"));
         assertEq(ids[2], cdp3);
@@ -264,14 +264,14 @@ contract DssCdpManagerTest is DssDeployTestBase {
         (ids,, ilks) = getCdps.getCdpsAsc(address(manager), address(this));
         assertEq(ids.length, 2);
         assertEq(ids[0], cdp1);
-        assertEq32(ilks[0], bytes32("ETH"));
+        assertEq32(ilks[0], bytes32("VLX"));
         assertEq(ids[1], cdp3);
         assertEq32(ilks[1], bytes32("GOLD"));
     }
 
     function testGetCdpsDesc() public {
         setUpManager();
-        uint cdp1 = manager.open("ETH", address(this));
+        uint cdp1 = manager.open("VLX", address(this));
         uint cdp2 = manager.open("REP", address(this));
         uint cdp3 = manager.open("GOLD", address(this));
 
@@ -282,7 +282,7 @@ contract DssCdpManagerTest is DssDeployTestBase {
         assertEq(ids[1], cdp2);
         assertTrue(ilks[1] == bytes32("REP"));
         assertEq(ids[2], cdp1);
-        assertTrue(ilks[2] == bytes32("ETH"));
+        assertTrue(ilks[2] == bytes32("VLX"));
 
         manager.give(cdp2, address(user));
         (ids,, ilks) = getCdps.getCdpsDesc(address(manager), address(this));
@@ -290,69 +290,69 @@ contract DssCdpManagerTest is DssDeployTestBase {
         assertEq(ids[0], cdp3);
         assertTrue(ilks[0] == bytes32("GOLD"));
         assertEq(ids[1], cdp1);
-        assertTrue(ilks[1] == bytes32("ETH"));
+        assertTrue(ilks[1] == bytes32("VLX"));
     }
 
     function testFrob() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
-        assertEq(vat.dai(manager.urns(cdp)), 50 ether * RAY);
-        assertEq(vat.dai(address(this)), 0);
+        assertEq(vat.usdv(manager.urns(cdp)), 50 ether * RAY);
+        assertEq(vat.usdv(address(this)), 0);
         manager.move(cdp, address(this), 50 ether * RAY);
-        assertEq(vat.dai(manager.urns(cdp)), 0);
-        assertEq(vat.dai(address(this)), 50 ether * RAY);
-        assertEq(dai.balanceOf(address(this)), 0);
+        assertEq(vat.usdv(manager.urns(cdp)), 0);
+        assertEq(vat.usdv(address(this)), 50 ether * RAY);
+        assertEq(usdv.balanceOf(address(this)), 0);
         vat.hope(address(daiJoin));
         daiJoin.exit(address(this), 50 ether);
-        assertEq(dai.balanceOf(address(this)), 50 ether);
+        assertEq(usdv.balanceOf(address(this)), 50 ether);
     }
 
     function testFrobAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.cdpAllow(cdp, address(user), 1);
         user.doFrob(manager, cdp, 1 ether, 50 ether);
-        assertEq(vat.dai(manager.urns(cdp)), 50 ether * RAY);
+        assertEq(vat.usdv(manager.urns(cdp)), 50 ether * RAY);
     }
 
     function testFailFrobNotAllowed() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         user.doFrob(manager, cdp, 1 ether, 50 ether);
     }
 
     function testFrobGetCollateralBack() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
         manager.frob(cdp, -int(1 ether), -int(50 ether));
-        assertEq(vat.dai(address(this)), 0);
-        assertEq(vat.gem("ETH", manager.urns(cdp)), 1 ether);
-        assertEq(vat.gem("ETH", address(this)), 0);
+        assertEq(vat.usdv(address(this)), 0);
+        assertEq(vat.gem("VLX", manager.urns(cdp)), 1 ether);
+        assertEq(vat.gem("VLX", address(this)), 0);
         manager.flux(cdp, address(this), 1 ether);
-        assertEq(vat.gem("ETH", manager.urns(cdp)), 0);
-        assertEq(vat.gem("ETH", address(this)), 1 ether);
-        uint prevBalance = weth.balanceOf(address(this));
-        ethJoin.exit(address(this), 1 ether);
-        assertEq(weth.balanceOf(address(this)), prevBalance + 1 ether);
+        assertEq(vat.gem("VLX", manager.urns(cdp)), 0);
+        assertEq(vat.gem("VLX", address(this)), 1 ether);
+        uint prevBalance = wvlx.balanceOf(address(this));
+        vlxJoin.exit(address(this), 1 ether);
+        assertEq(wvlx.balanceOf(address(this)), prevBalance + 1 ether);
     }
 
     function testGetWrongCollateralBack() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
         col.mint(1 ether);
         col.approve(address(colJoin), 1 ether);
         colJoin.join(manager.urns(cdp), 1 ether);
@@ -365,67 +365,67 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testQuit() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 0);
         assertEq(art, 0);
 
         vat.hope(address(manager));
         manager.quit(cdp, address(this));
-        (ink, art) = vat.urns("ETH", manager.urns(cdp));
+        (ink, art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 0);
         assertEq(art, 0);
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
     }
 
     function testQuitOtherDst() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 0);
         assertEq(art, 0);
 
         user.doHope(vat, address(manager));
         user.doUrnAllow(manager, address(this), 1);
         manager.quit(cdp, address(user));
-        (ink, art) = vat.urns("ETH", manager.urns(cdp));
+        (ink, art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 0);
         assertEq(art, 0);
-        (ink, art) = vat.urns("ETH", address(user));
+        (ink, art) = vat.urns("VLX", address(user));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
     }
 
     function testFailQuitOtherDst() public {
         setUpManager();
-        uint cdp = manager.open("ETH", address(this));
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(manager.urns(cdp), 1 ether);
+        uint cdp = manager.open("VLX", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(manager.urns(cdp), 1 ether);
         manager.frob(cdp, 1 ether, 50 ether);
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 0);
         assertEq(art, 0);
 
@@ -435,46 +435,46 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testEnter() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(this), 1 ether);
-        vat.frob("ETH", address(this), address(this), address(this), 1 ether, 50 ether);
-        uint cdp = manager.open("ETH", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(this), 1 ether);
+        vat.frob("VLX", address(this), address(this), address(this), 1 ether, 50 ether);
+        uint cdp = manager.open("VLX", address(this));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
         vat.hope(address(manager));
         manager.enter(address(this), cdp);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdp));
+        (ink, art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testEnterOtherSrc() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(user), 1 ether);
-        user.doVatFrob(vat, "ETH", address(user), address(user), address(user), 1 ether, 50 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(user), 1 ether);
+        user.doVatFrob(vat, "VLX", address(user), address(user), address(user), 1 ether, 50 ether);
 
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", address(user));
+        (ink, art) = vat.urns("VLX", address(user));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
@@ -482,23 +482,23 @@ contract DssCdpManagerTest is DssDeployTestBase {
         user.doUrnAllow(manager, address(this), 1);
         manager.enter(address(user), cdp);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdp));
+        (ink, art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", address(user));
+        (ink, art) = vat.urns("VLX", address(user));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testFailEnterOtherSrc() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(user), 1 ether);
-        user.doVatFrob(vat, "ETH", address(user), address(user), address(user), 1 ether, 50 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(user), 1 ether);
+        user.doVatFrob(vat, "VLX", address(user), address(user), address(user), 1 ether, 50 ether);
 
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
 
         user.doHope(vat, address(manager));
         manager.enter(address(user), cdp);
@@ -506,12 +506,12 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testFailEnterOtherSrc2() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(user), 1 ether);
-        user.doVatFrob(vat, "ETH", address(user), address(user), address(user), 1 ether, 50 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(user), 1 ether);
+        user.doVatFrob(vat, "VLX", address(user), address(user), address(user), 1 ether, 50 ether);
 
-        uint cdp = manager.open("ETH", address(this));
+        uint cdp = manager.open("VLX", address(this));
 
         user.doUrnAllow(manager, address(this), 1);
         manager.enter(address(user), cdp);
@@ -519,18 +519,18 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testEnterOtherCdp() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(this), 1 ether);
-        vat.frob("ETH", address(this), address(this), address(this), 1 ether, 50 ether);
-        uint cdp = manager.open("ETH", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(this), 1 ether);
+        vat.frob("VLX", address(this), address(this), address(this), 1 ether, 50 ether);
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(user));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdp));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
@@ -538,22 +538,22 @@ contract DssCdpManagerTest is DssDeployTestBase {
         user.doCdpAllow(manager, cdp, address(this), 1);
         manager.enter(address(this), cdp);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdp));
+        (ink, art) = vat.urns("VLX", manager.urns(cdp));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", address(this));
+        (ink, art) = vat.urns("VLX", address(this));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testFailEnterOtherCdp() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(this), 1 ether);
-        vat.frob("ETH", address(this), address(this), address(this), 1 ether, 50 ether);
-        uint cdp = manager.open("ETH", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(this), 1 ether);
+        vat.frob("VLX", address(this), address(this), address(this), 1 ether, 50 ether);
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(user));
 
         vat.hope(address(manager));
@@ -562,11 +562,11 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testFailEnterOtherCdp2() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        ethJoin.join(address(this), 1 ether);
-        vat.frob("ETH", address(this), address(this), address(this), 1 ether, 50 ether);
-        uint cdp = manager.open("ETH", address(this));
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        vlxJoin.join(address(this), 1 ether);
+        vat.frob("VLX", address(this), address(this), address(this), 1 ether, 50 ether);
+        uint cdp = manager.open("VLX", address(this));
         manager.give(cdp, address(user));
 
         user.doCdpAllow(manager, cdp, address(this), 1);
@@ -575,70 +575,70 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testShift() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        uint cdpSrc = manager.open("ETH", address(this));
-        ethJoin.join(address(manager.urns(cdpSrc)), 1 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        uint cdpSrc = manager.open("VLX", address(this));
+        vlxJoin.join(address(manager.urns(cdpSrc)), 1 ether);
         manager.frob(cdpSrc, 1 ether, 50 ether);
-        uint cdpDst = manager.open("ETH", address(this));
+        uint cdpDst = manager.open("VLX", address(this));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdpDst));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
         manager.shift(cdpSrc, cdpDst);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpDst));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testShiftOtherCdpDst() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        uint cdpSrc = manager.open("ETH", address(this));
-        ethJoin.join(address(manager.urns(cdpSrc)), 1 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        uint cdpSrc = manager.open("VLX", address(this));
+        vlxJoin.join(address(manager.urns(cdpSrc)), 1 ether);
         manager.frob(cdpSrc, 1 ether, 50 ether);
-        uint cdpDst = manager.open("ETH", address(this));
+        uint cdpDst = manager.open("VLX", address(this));
         manager.give(cdpDst, address(user));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdpDst));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
         user.doCdpAllow(manager, cdpDst, address(this), 1);
         manager.shift(cdpSrc, cdpDst);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpDst));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testFailShiftOtherCdpDst() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        uint cdpSrc = manager.open("ETH", address(this));
-        ethJoin.join(address(manager.urns(cdpSrc)), 1 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        uint cdpSrc = manager.open("VLX", address(this));
+        vlxJoin.join(address(manager.urns(cdpSrc)), 1 ether);
         manager.frob(cdpSrc, 1 ether, 50 ether);
-        uint cdpDst = manager.open("ETH", address(this));
+        uint cdpDst = manager.open("VLX", address(this));
         manager.give(cdpDst, address(user));
 
         manager.shift(cdpSrc, cdpDst);
@@ -646,42 +646,42 @@ contract DssCdpManagerTest is DssDeployTestBase {
 
     function testShiftOtherCdpSrc() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        uint cdpSrc = manager.open("ETH", address(this));
-        ethJoin.join(address(manager.urns(cdpSrc)), 1 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        uint cdpSrc = manager.open("VLX", address(this));
+        vlxJoin.join(address(manager.urns(cdpSrc)), 1 ether);
         manager.frob(cdpSrc, 1 ether, 50 ether);
-        uint cdpDst = manager.open("ETH", address(this));
+        uint cdpDst = manager.open("VLX", address(this));
         manager.give(cdpSrc, address(user));
 
-        (uint ink, uint art) = vat.urns("ETH", manager.urns(cdpDst));
+        (uint ink, uint art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 0);
         assertEq(art, 0);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
         user.doCdpAllow(manager, cdpSrc, address(this), 1);
         manager.shift(cdpSrc, cdpDst);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpDst));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpDst));
         assertEq(ink, 1 ether);
         assertEq(art, 50 ether);
 
-        (ink, art) = vat.urns("ETH", manager.urns(cdpSrc));
+        (ink, art) = vat.urns("VLX", manager.urns(cdpSrc));
         assertEq(ink, 0);
         assertEq(art, 0);
     }
 
     function testFailShiftOtherCdpSrc() public {
         setUpManager();
-        weth.mint(1 ether);
-        weth.approve(address(ethJoin), 1 ether);
-        uint cdpSrc = manager.open("ETH", address(this));
-        ethJoin.join(address(manager.urns(cdpSrc)), 1 ether);
+        wvlx.mint(1 ether);
+        wvlx.approve(address(vlxJoin), 1 ether);
+        uint cdpSrc = manager.open("VLX", address(this));
+        vlxJoin.join(address(manager.urns(cdpSrc)), 1 ether);
         manager.frob(cdpSrc, 1 ether, 50 ether);
-        uint cdpDst = manager.open("ETH", address(this));
+        uint cdpDst = manager.open("VLX", address(this));
         manager.give(cdpSrc, address(user));
 
         manager.shift(cdpSrc, cdpDst);
