@@ -306,8 +306,8 @@ contract DssCdpManagerTest is DssDeployTestBase {
         assertEq(vat.usdv(manager.urns(cdp)), 0);
         assertEq(vat.usdv(address(this)), 50 ether * RAY);
         assertEq(usdv.balanceOf(address(this)), 0);
-        vat.hope(address(daiJoin));
-        daiJoin.exit(address(this), 50 ether);
+        vat.hope(address(usdvJoin));
+        usdvJoin.exit(address(this), 50 ether);
         assertEq(usdv.balanceOf(address(this)), 50 ether);
     }
 
